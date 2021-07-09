@@ -26,6 +26,14 @@ If there is any suggestion or error, feel free to fire an issue to let me know. 
 
 # Usage
 
+# 라이브러리 설치
+```bash
+pip install msgpack==1.0.2
+pip install msgpack-numpy==0.4.7.1
+pip install spacy==2.3.5
+pip install torchtext==0.4
+```
+
 ## WMT'16 Multimodal Translation: de-en
 
 An example of training for the WMT'16 Multimodal Translation task (http://www.statmt.org/wmt16/multimodal-task.html).
@@ -83,7 +91,7 @@ python translate.py -data_pkl m30k_deen_shr.pkl -model ./output/model.chkpt -out
 ## Testing 
 - (training) ppl : 6.85121, acu : 85.685 %, lr: 0.00009
 - (validation) ppl : 13.92095, acu: 62.202 %, lr: 0.00009
----
+- (test) bleu : 0.37815
 # TODO
   - Evaluation on the generated text.
   - Attention weight plot.
