@@ -62,25 +62,6 @@ python translate.py -data_pkl m30k_deen_shr.pkl -model trained.chkpt -output pre
 python translate.py -data_pkl m30k_deen_shr.pkl -model ./output/model.chkpt -output prediction.txt
 ```
 
-## [(WIP)] WMT'17 Multimodal Translation: de-en w/ BPE 
-### 1) Download and preprocess the data with bpe:
-
-> Since the interfaces is not unified, you need to switch the main function call from `main_wo_bpe` to `main`.
-
-```bash
-python preprocess.py -raw_dir /tmp/raw_deen -data_dir ./bpe_deen -save_data bpe_vocab.pkl -codes codes.txt -prefix deen
-```
-
-### 2) Train the model
-```bash
-python train.py -data_pkl ./bpe_deen/bpe_vocab.pkl -train_path ./bpe_deen/deen-train -val_path ./bpe_deen/deen-val -log deen_bpe -embs_share_weight -proj_share_weight -label_smoothing -output_dir output -b 256 -warmup 128000 -epoch 400
-```
-
-### 3) Test the model (not ready)
-- TODO:
-	- Load vocabulary.
-	- Perform decoding after the translation.
----
 # Performance
 ## Training
 
@@ -100,7 +81,8 @@ python train.py -data_pkl ./bpe_deen/bpe_vocab.pkl -train_path ./bpe_deen/deen-t
  
   
 ## Testing 
-- coming soon.
+- (training) ppl : 6.85121, acu : 85.685 %, lr: 0.00009
+- (validation) ppl : 13.92095, acu: 62.202 %, lr: 0.00009
 ---
 # TODO
   - Evaluation on the generated text.
