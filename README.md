@@ -52,22 +52,30 @@ python preprocess.py -lang_src de -lang_trg en -share_vocab -save_data m30k_deen
 
 
 ### 2) Train the model
+수정 전
 ```bash
 python train.py -data_pkl m30k_deen_shr.pkl -log m30k_deen_shr -embs_share_weight -proj_share_weight -label_smoothing -output_dir output -b 256 -warmup 128000 -epoch 400
 ```
 
+수정 후
 ```bash
 python train.py -data_pkl m30k_deen_shr.pkl -embs_share_weight -proj_share_weight -label_smoothing -output_dir output -b 256 -warmup 128000 -epoch 400
 ```
 
 ### 3) Test the model
+수정 전
 ```bash
 python translate.py -data_pkl m30k_deen_shr.pkl -model trained.chkpt -output prediction.txt
 ```
 
-
+수정 후
 ```bash
 python translate.py -data_pkl m30k_deen_shr.pkl -model ./output/model.chkpt -output prediction.txt
+```
+
+### 4) calculate bleu
+```bash
+python bleu.py --reference ./.data/multi30k/test2016.en --candidate prediction.txt
 ```
 
 # Performance
