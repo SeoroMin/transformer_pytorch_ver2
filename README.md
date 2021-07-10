@@ -89,9 +89,13 @@ python translate.py -data_pkl m30k_deen_shr.pkl -model ./output/model.chkpt -out
  
   
 ## Testing 
+layer 6, head 8
 - (training) ppl : 6.85121, acu : 85.685 %, lr: 0.00009
 - (validation) ppl : 13.92095, acu: 62.202 %, lr: 0.00009
 - (test) bleu : 0.37815
+
+layer 12, head 12
+
 # TODO
   - Evaluation on the generated text.
   - Attention weight plot.
