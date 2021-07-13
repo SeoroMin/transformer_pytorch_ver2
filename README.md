@@ -98,11 +98,26 @@ python bleu.py --reference ./.data/multi30k/test2016.en --candidate prediction.t
   
 ## Testing 
 layer 6, head 8
-- (training) ppl : 6.85121, acu : 85.685 %, lr: 0.00009
-- (validation) ppl : 13.92095, acu: 62.202 %, lr: 0.00009
+- (training) ppl : 6.85121, acu : 85.685 %
+- (validation) ppl : 13.92095, acu: 62.202 %
 - (test) bleu : 0.37815
 
 layer 12, head 12
+- (training) ppl : 8.18509, acu : 80.748 %
+- (validation) ppl : 28.42237, acu: 50.873 %
+- (test) bleu : 0.27540
+
+layer 12, head 8
+- (test) bleu : 0.28398
+
+layer 8, head 12
+- (training) ppl : 6.94947, acu : 85.097 %
+- (Validation) ppl : 30.94104, acu : 51.773 %
+- (test) bleu : 0.28535
+
+layer 8, head 8
+- (test) bleu : 0.29825
+
 
 # TODO
   - Evaluation on the generated text.
