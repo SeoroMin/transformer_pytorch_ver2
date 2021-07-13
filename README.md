@@ -118,6 +118,8 @@ layer 8, head 12
 layer 8, head 8
 - (test) bleu : 0.29825
 
+wmt 14 dataset (preprocess.py에서 multi30k -> wmt14로 변경)
+
 
 # TODO
   - Evaluation on the generated text.
