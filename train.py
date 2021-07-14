@@ -23,20 +23,21 @@ from transformer.Optim import ScheduledOptim
 
 __author__ = "Yu-Hsiang Huang"
 
+# 성능 계산
 def cal_performance(pred, gold, trg_pad_idx, smoothing=False):
     ''' Apply label smoothing if needed '''
 
-    loss = cal_loss(pred, gold, trg_pad_idx, smoothing=smoothing)
+    loss = cal_loss(pred, gold, trg_pad_idx, smoothing=smoothing) # loss 계산
 
     pred = pred.max(1)[1]
-    gold = gold.contiguous().view(-1)
+    gold = gold.contiguous().view(-1) #
     non_pad_mask = gold.ne(trg_pad_idx)
-    n_correct = pred.eq(gold).masked_select(non_pad_mask).sum().item()
-    n_word = non_pad_mask.sum().item()
+    n_correct = pred.eq(gold).masked_select(non_pad_mask).sum().item() # 맞은 개수
+    n_word = non_pad_mask.sum().item() # 단어 개수
 
     return loss, n_correct, n_word
 
-
+# loss 계산
 def cal_loss(pred, gold, trg_pad_idx, smoothing=False):
     ''' Calculate cross entropy loss, apply label smoothing if needed. '''
 
@@ -54,25 +55,25 @@ def cal_loss(pred, gold, trg_pad_idx, smoothing=False):
         loss = -(one_hot * log_prb).sum(dim=1)
         loss = loss.masked_select(non_pad_mask).sum()  # average later
     else:
-        loss = F.cross_entropy(pred, gold, ignore_index=trg_pad_idx, reduction='sum')
+        loss = F.cross_entropy(pred, gold, ignore_index=trg_pad_idx, reduction='sum') # cross entropy 손실함수
     return loss
 
 
 def patch_src(src, pad_idx):
-    src = src.transpose(0, 1)
+    src = src.transpose(0, 1) # 0~1로 값 설정
     return src
 
 
 def patch_trg(trg, pad_idx):
-    trg = trg.transpose(0, 1)
+    trg = trg.transpose(0, 1) # 0~1로 값 설정
     trg, gold = trg[:, :-1], trg[:, 1:].contiguous().view(-1)
     return trg, gold
 
-
+# train 함수
 def train_epoch(model, training_data, optimizer, opt, device, smoothing):
     ''' Epoch operation in training phase'''
 
-    model.train()
+    model.train() # train
     total_loss, n_word_total, n_word_correct = 0, 0, 0 
 
     desc = '  - (Training)   '
@@ -101,7 +102,7 @@ def train_epoch(model, training_data, optimizer, opt, device, smoothing):
     accuracy = n_word_correct/n_word_total
     return loss_per_word, accuracy
 
-
+# eval 평가
 def eval_epoch(model, validation_data, device, opt):
     ''' Epoch operation in evaluation phase '''
 
@@ -130,7 +131,7 @@ def eval_epoch(model, validation_data, device, opt):
     accuracy = n_word_correct/n_word_total
     return loss_per_word, accuracy
 
-
+# train
 def train(model, training_data, validation_data, optimizer, device, opt):
     ''' Start training '''
 
@@ -164,7 +165,7 @@ def train(model, training_data, validation_data, optimizer, device, opt):
         start = time.time()
         train_loss, train_accu = train_epoch(
             model, training_data, optimizer, opt, device, smoothing=opt.label_smoothing)
-        train_ppl = math.exp(min(train_loss, 100))
+        train_ppl = math.exp(min(train_loss, 100)) # loss 최소값 지수화
         # Current learning rate
         lr = optimizer._optimizer.param_groups[0]['lr']
         print_performances('Training', train_ppl, train_accu, start, lr)
