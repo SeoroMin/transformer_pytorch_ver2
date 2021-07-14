@@ -10,12 +10,13 @@ from torchtext.data import Dataset
 from transformer.Models import Transformer
 from transformer.Translator import Translator
 
-
+# model 불러오기
 def load_model(opt, device):
 
-    checkpoint = torch.load(opt.model, map_location=device)
+    checkpoint = torch.load(opt.model, map_location=device) # 모델 checkpoint에 저장
     model_opt = checkpoint['settings']
 
+    # transformer parameter model에 저장
     model = Transformer(
         model_opt.src_vocab_size,
         model_opt.trg_vocab_size,
@@ -34,11 +35,12 @@ def load_model(opt, device):
         n_head=model_opt.n_head,
         dropout=model_opt.dropout).to(device)
 
+    # transformer model에 불러온 model 설정
     model.load_state_dict(checkpoint['model'])
     print('[Info] Trained model state loaded.')
     return model 
 
-
+# main 호출
 def main():
     '''Main Function'''
 
@@ -46,9 +48,9 @@ def main():
 
     parser.add_argument('-model', required=True,
                         help='Path to model weight file')
-    parser.add_argument('-data_pkl', required=True,
+    parser.add_argument('-data_pkl', required=True, # input data 파일
                         help='Pickle file with both instances and vocabulary.')
-    parser.add_argument('-output', default='pred.txt',
+    parser.add_argument('-output', default='pred.txt', # output data 파일
                         help="""Path to output the predictions (each line will
                         be the decoded sequence""")
     parser.add_argument('-beam_size', type=int, default=5)
@@ -77,9 +79,9 @@ def main():
     opt.trg_bos_idx = TRG.vocab.stoi[Constants.BOS_WORD]
     opt.trg_eos_idx = TRG.vocab.stoi[Constants.EOS_WORD]
 
-    test_loader = Dataset(examples=data['test'], fields={'src': SRC, 'trg': TRG})
+    test_loader = Dataset(examples=data['test'], fields={'src': SRC, 'trg': TRG}) # test dataset load / 정확히 이해는 안 됨
     
-    device = torch.device('cuda' if opt.cuda else 'cpu')
+    device = torch.device('cuda' if opt.cuda else 'cpu') # cuda 불러오기
     translator = Translator(
         model=load_model(opt, device),
         beam_size=opt.beam_size,
@@ -93,12 +95,12 @@ def main():
     with open(opt.output, 'w') as f:
         for example in tqdm(test_loader, mininterval=2, desc='  - (Test)', leave=False):
             #print(' '.join(example.src))
-            src_seq = [SRC.vocab.stoi.get(word, unk_idx) for word in example.src]
-            pred_seq = translator.translate_sentence(torch.LongTensor([src_seq]).to(device))
-            pred_line = ' '.join(TRG.vocab.itos[idx] for idx in pred_seq)
-            pred_line = pred_line.replace(Constants.BOS_WORD, '').replace(Constants.EOS_WORD, '')
+            src_seq = [SRC.vocab.stoi.get(word, unk_idx) for word in example.src] # src sequence
+            pred_seq = translator.translate_sentence(torch.LongTensor([src_seq]).to(device)) # src_seq 수치화 후 문장 번역
+            pred_line = ' '.join(TRG.vocab.itos[idx] for idx in pred_seq) # seq -> line 합치기
+            pred_line = pred_line.replace(Constants.BOS_WORD, '').replace(Constants.EOS_WORD, '') # BOS, EOS 공백 변환
             #print(pred_line)
-            f.write(pred_line.strip() + '\n')
+            f.write(pred_line.strip() + '\n') # 쓰기
 
     print('[Info] Finished.')
 
