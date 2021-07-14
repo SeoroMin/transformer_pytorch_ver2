@@ -45,21 +45,21 @@ _TEST_DATA_SOURCES = [
      "trg": "newstest2014.en",
      "src": "newstest2014.de"}]
 
-
+# progress bar 생성 class
 class TqdmUpTo(tqdm):
     def update_to(self, b=1, bsize=1, tsize=None):
         if tsize is not None:
             self.total = tsize
         self.update(b * bsize - self.n)
 
-
+# file 존재하는지 확인
 def file_exist(dir_name, file_name):
     for sub_dir, _, files in os.walk(dir_name):
         if file_name in files:
             return os.path.join(sub_dir, file_name)
     return None
 
-
+# 다운로드 및 추출
 def download_and_extract(download_dir, url, src_filename, trg_filename):
     src_path = file_exist(download_dir, src_filename)
     trg_path = file_exist(download_dir, trg_filename)
@@ -68,7 +68,7 @@ def download_and_extract(download_dir, url, src_filename, trg_filename):
         sys.stderr.write(f"Already downloaded and extracted {url}.\n")
         return src_path, trg_path
 
-    compressed_file = _download_file(download_dir, url)
+    compressed_file = _download_file(download_dir, url) # 다운로드
 
     sys.stderr.write(f"Extracting {compressed_file}.\n")
     with tarfile.open(compressed_file, "r:gz") as corpus_tar:
@@ -82,7 +82,7 @@ def download_and_extract(download_dir, url, src_filename, trg_filename):
 
     raise OSError(f"Download/extraction failed for url {url} to path {download_dir}")
 
-
+# 다운로드 파일
 def _download_file(download_dir, url):
     filename = url.split("/")[-1]
     if file_exist(download_dir, filename):
@@ -93,7 +93,7 @@ def _download_file(download_dir, url):
             urllib.request.urlretrieve(url, filename=filename, reporthook=t.update_to)
     return filename
 
-
+# 원본 파일
 def get_raw_files(raw_dir, sources):
     raw_files = { "src": [], "trg": [], }
     for d in sources:
@@ -102,12 +102,12 @@ def get_raw_files(raw_dir, sources):
         raw_files["trg"].append(trg_file)
     return raw_files
 
-
+# 디렉토리 생성
 def mkdir_if_needed(dir_name):
     if not os.path.isdir(dir_name):
         os.makedirs(dir_name)
 
-
+# compile
 def compile_files(raw_dir, raw_files, prefix):
     src_fpath = os.path.join(raw_dir, f"raw-{prefix}.src")
     trg_fpath = os.path.join(raw_dir, f"raw-{prefix}.trg")
@@ -134,7 +134,7 @@ def compile_files(raw_dir, raw_files, prefix):
                 assert cntr == 0, 'Number of lines in two files are inconsistent.'
     return src_fpath, trg_fpath
 
-
+# encoding
 def encode_file(bpe, in_file, out_file):
     sys.stderr.write(f"Read raw content from {in_file} and \n"\
             f"Write encoded content to {out_file}\n")
@@ -144,7 +144,7 @@ def encode_file(bpe, in_file, out_file):
             for line in in_f:
                 out_f.write(bpe.process_line(line))
 
-
+# 여러 파일 encoding
 def encode_files(bpe, src_in_file, trg_in_file, data_dir, prefix):
     src_out_file = os.path.join(data_dir, f"{prefix}.src")
     trg_out_file = os.path.join(data_dir, f"{prefix}.trg")
@@ -156,7 +156,7 @@ def encode_files(bpe, src_in_file, trg_in_file, data_dir, prefix):
     encode_file(bpe, trg_in_file, trg_out_file)
     return src_out_file, trg_out_file
 
-
+# main 호출
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-raw_dir', required=True)
@@ -240,7 +240,7 @@ def main():
     pickle.dump(data, open(opt.save_data, 'wb'))
 
 
-
+# wmt16은 얘를 호출함
 def main_wo_bpe():
     '''
     Usage: python preprocess.py -lang_src de -lang_trg en -save_data multi30k_de_en.pkl -share_vocab
