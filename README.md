@@ -97,6 +97,8 @@ python bleu.py --reference ./.data/multi30k/test2016.en --candidate prediction.t
  
   
 ## Testing 
+(train.py에서 layer, head값 변경)
+
 layer 6, head 8
 - (training) ppl : 6.85121, acu : 85.685 %
 - (validation) ppl : 13.92095, acu: 62.202 %
