@@ -20,7 +20,7 @@ if len(reference) != len(candidate):
 score = 0.
 
 for i in range(len(reference)):
-    score += sentence_bleu([reference[i].strip().split()], candidate[i].strip().split())
+    score += sentence_bleu([reference[i].strip().split()], candidate[i].strip().split(), weights=(1,0,0,0))
 
 score /= len(reference)
 print("The bleu score is: "+str(score))
