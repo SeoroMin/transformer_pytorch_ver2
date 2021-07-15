@@ -1,4 +1,5 @@
 ''' Define the sublayers in encoder/decoder layer '''
+import math
 import numpy as np
 import torch.nn as nn
 import torch.nn.functional as F
@@ -9,7 +10,7 @@ __author__ = "Yu-Hsiang Huang"
 class MultiHeadAttention(nn.Module):
     ''' Multi-Head Attention module '''
 
-    def __init__(self, n_head, d_model, d_k, d_v, dropout=0.1):
+    def __init__(self, n_head, d_model, d_k, d_v, dropout=0.1, device=None):
         super().__init__()
 
         self.n_head = n_head
@@ -21,7 +22,7 @@ class MultiHeadAttention(nn.Module):
         self.w_vs = nn.Linear(d_model, n_head * d_v, bias=False)
         self.fc = nn.Linear(n_head * d_v, d_model, bias=False)
 
-        self.attention = ScaledDotProductAttention(temperature=d_k ** 0.5)
+        self.attention = ScaledDotProductAttention(temperature=d_k ** 0.5, attn_dropout=0.1, device=device)
 
         self.dropout = nn.Dropout(dropout)
         self.layer_norm = nn.LayerNorm(d_model, eps=1e-6)
@@ -62,12 +63,13 @@ class MultiHeadAttention(nn.Module):
 class PositionwiseFeedForward(nn.Module):
     ''' A two-feed-forward-layer module '''
 
-    def __init__(self, d_in, d_hid, dropout=0.1):
+    def __init__(self, d_in, d_hid, dropout=0.1, device=None):
         super().__init__()
         self.w_1 = nn.Linear(d_in, d_hid) # position-wise
         self.w_2 = nn.Linear(d_hid, d_in) # position-wise
         self.layer_norm = nn.LayerNorm(d_in, eps=1e-6)
         self.dropout = nn.Dropout(dropout)
+        self.device = device
 
     def forward(self, x):
 
@@ -75,6 +77,12 @@ class PositionwiseFeedForward(nn.Module):
 
         x = self.w_2(F.relu(self.w_1(x)))
         x = self.dropout(x)
+        
+        maximum_value = torch.max(x)#torch.FloatTensor([math.sqrt(torch.max(value))]).to(args.device)
+        if maximum_value > 1.0:
+            maximum_value = torch.FloatTensor([math.sqrt(torch.max(x))]).to(self.device)
+            x.divide_(maximum_value)
+            
         x += residual
 
         x = self.layer_norm(x)
