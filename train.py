@@ -294,7 +294,8 @@ def main():
         n_layers=opt.n_layers,
         n_head=opt.n_head,
         dropout=opt.dropout,
-        scale_emb_or_prj=opt.scale_emb_or_prj).to(device)
+        scale_emb_or_prj=opt.scale_emb_or_prj,
+        device=device).to(device)
 
     optimizer = ScheduledOptim(
         optim.Adam(transformer.parameters(), betas=(0.9, 0.98), eps=1e-09),
