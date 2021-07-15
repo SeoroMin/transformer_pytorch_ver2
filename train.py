@@ -1,5 +1,6 @@
 '''
 This script handles the training process.
+Add scaling method =BM-K=
 '''
 
 import argparse
