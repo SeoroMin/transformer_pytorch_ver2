@@ -99,6 +99,10 @@ python bleu.py --reference ./.data/multi30k/test2016.en --candidate prediction.t
 ## Testing 
 (train.py에서 layer, head값 변경)
 
+(before)
+
+de -> en
+
 layer 6, head 8
 - (training) ppl : 6.85121, acu : 85.685 %
 - (validation) ppl : 13.92095, acu: 62.202 %
@@ -121,6 +125,31 @@ layer 8, head 8
 - (test) bleu : 0.29825
 
 wmt 14 dataset (preprocess.py에서 multi30k -> wmt14로 변경)
+
+en -> de
+
+layer 6, head 8
+- (training) ppl : 6.66036, acu : 86.251 %
+- (validation) ppl : 14.95462, acu: 59.245 %
+- (test) bleu : 0.20529
+
+
+
+(after pull request merge)
+
+de -> en
+
+layer 6, head 8
+- (training) ppl : 6.85121, acu : 85.685 %
+- (validation) ppl : 13.92095, acu: 62.202 %
+- (test) bleu : 0.37815
+
+en -> de
+
+layer 6, head 8
+- (training) ppl : 6.66036, acu : 86.251 %
+- (validation) ppl : 14.95462, acu: 59.245 %
+- (test) bleu : 0.20529
 
 
 # TODO
