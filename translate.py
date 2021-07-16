@@ -33,7 +33,9 @@ def load_model(opt, device):
         d_inner=model_opt.d_inner_hid,
         n_layers=model_opt.n_layers,
         n_head=model_opt.n_head,
-        dropout=model_opt.dropout).to(device)
+        dropout=model_opt.dropout, # 아래 3줄 수정
+        scale_embs_or_prj='prj',
+        device=None).to(device)
 
     # transformer model에 불러온 model 설정
     model.load_state_dict(checkpoint['model'])
