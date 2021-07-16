@@ -147,9 +147,9 @@ layer 6, head 8
 en -> de
 
 layer 6, head 8
-- (training) ppl : 6.66036, acu : 86.251 %
-- (validation) ppl : 14.95462, acu: 59.245 %
-- (test) bleu : 0.20529
+- (training) ppl : 6.66036, acu : 86.329 %
+- (validation) ppl : 14.95462, acu: 66.987 %
+- (test) bleu : 
 
 
 # TODO
